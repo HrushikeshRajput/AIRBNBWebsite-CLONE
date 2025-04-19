@@ -25,6 +25,7 @@ router.post(
       const newUser = new User({ email, username });
       const registeredUser = await User.register(newUser, password);
       console.log(registeredUser);
+      //login method
       req.login(registeredUser, (err) => {
         if (err) {
           return next(err);
