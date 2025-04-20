@@ -32,7 +32,7 @@ const listingSchema = new Schema({
   location: String,
   country: String,
   reviews: [{ type: Schema.Types.ObjectId, ref: "Review" }],
-  owner: [{ type: Schema.Types.ObjectId, ref: "User" }],
+  owner: { type: Schema.Types.ObjectId, ref: "User" }, //It single owner that refer to the User property
 });
 //middelware for listing review when listing deletes then its respective reviews also delete
 listingSchema.post("findOneAndDelete", async (listing) => {

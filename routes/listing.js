@@ -11,6 +11,7 @@ const {isLoggedIn,isOwner, validateListing} = require("../middleware.js");
 
 
 
+
 //   Index route 
 router.get(
   "/",
@@ -35,7 +36,7 @@ router.get(
   wrapAsync(async (req, res) => {
     let { id } = req.params;
     //find the record using id from listing model
-    const listing = await Listing.findById(id).populate("reviews").populate("owner");
+    const listing = await Listing.findById(id).populate({path:"reviews",populate:{path:"author",},}).populate("owner");
     if (!listing) {
       req.flash("error","Listing you requested for does not exist!");
       res.redirect("/listings");
@@ -53,7 +54,7 @@ router.post(
   validateListing,
   wrapAsync(async (req, res, next) => {
     const newListing = new Listing(req.body.listing);
-    newListing.owner=req.user._id;
+    newListing.owner=req.user._id; //to save current user information 
     await newListing.save();
     req.flash("success","New Listing is Created!");
     res.redirect("/listings");
