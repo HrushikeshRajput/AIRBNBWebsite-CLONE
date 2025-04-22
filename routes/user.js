@@ -3,72 +3,32 @@ const router = express.Router();
 //Require user.js model
 const User = require("../models/user.js");
 const wrapAsync = require("../utils/wrapAsync");
-
 //Require passport
 const passport = require("passport");
 const { saveRedirectUrl } = require("../middleware.js");
+//Require user.js from controllers
+const userController = require("../controllers/user.js");
 
-// //Require saveredirect url
-// const{saveRedirectUrl} = require("../middleware.js");
+//using router.route method to combine "/signup" route
+router
+  .route("/signup")
+  .get(userController.renderSignUpForm)
+  .post(wrapAsync(userController.signUp));
 
-//GET route for signup page
-router.get("/signup", (req, res) => {
-  res.render("users/signup.ejs");
-});
-
-//POST route for signup page
-router.post(
-  "/signup",
-  wrapAsync(async (req, res) => {
-    try {
-      let { username, email, password } = req.body;
-      const newUser = new User({ email, username });
-      const registeredUser = await User.register(newUser, password);
-      console.log(registeredUser);
-      //login method
-      req.login(registeredUser, (err) => {
-        if (err) {
-          return next(err);
-        }
-        req.flash("success", "Welcome to Wanderlust");
-        res.redirect("/listings");
-      });
-    } catch (e) {
-      req.flash("error", e.message);
-      res.redirect("/signup");
-    }
-  })
-);
-
-//POST route for login page
-router.get("/login", (req, res) => {
-  res.render("users/login.ejs");
-});
-
-//Define POST router for login
-router.post(
-  "/login",
-  saveRedirectUrl,
-  passport.authenticate("local", {
-    failureRedirect: "/login",
-    failureFlash: true,
-  }),
-  async (req, res) => {
-    req.flash("success", "Welcome back to Wanderlust!");
-    let redirectUrl = res.locals.redirectUrl || "/listings";
-    res.redirect(redirectUrl);
-  }
-);
+//using router.route method to combine "/login" route
+router
+  .route("/login")
+  .get(userController.renderLoginForm)
+  .post(
+    saveRedirectUrl,
+    passport.authenticate("local", {
+      failureRedirect: "/login",
+      failureFlash: true,
+    }),
+    userController.login
+  );
 
 //Define GET rout for logged out page
-router.get("/logout", (req, res, next) => {
-  req.logout((err) => {
-    if (err) {
-      return next(err);
-    }
-    req.flash("success", "You are logged out!");
-    res.redirect("/listings");
-  });
-});
+router.get("/logout", userController.logout);
 
 module.exports = router;

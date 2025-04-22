@@ -1,3 +1,6 @@
+if (process.env.NODE_ENV != "production") {
+  require("dotenv").config();
+}
 //Importing the Express.js library to create a web server
 const express = require("express");
 
@@ -55,12 +58,8 @@ const LocalStrategy = require("passport-local");
 //Require user model
 const User = require("./models/user.js");
 
-
-
 //Defining the MongoDB connection URL for the 'wanderlust' database
 const mongoUrl = "mongodb://127.0.0.1:27017/wanderlust";
-
-
 
 //Connecting to the MongoDB database using Mongoose
 main()
@@ -89,15 +88,12 @@ const sessionOptions = {
   secret: "mysupersecreatcode",
   resave: false,
   saveUninitialized: true,
-  cookie:{
-    expires:Date.now()+7*24*60*60*1000,
-    maxAge:7*24*60*60*1000,
-    httpOnly:true,
+  cookie: {
+    expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    httpOnly: true,
   },
 };
-
-
-
 
 //Defining the root route("/") for the web server
 //When a GET request is received at "/", respond with a simple message
@@ -110,13 +106,13 @@ app.use(flash());
 
 //Code for User Authentication
 app.use(passport.initialize()); //A middleware that initializes passport
-app.use(passport.session()); 
-passport.use(new LocalStrategy(User.authenticate())); //Use to authenticate user means login and signup for user 
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate())); //Use to authenticate user means login and signup for user
 
 passport.serializeUser(User.serializeUser()); //User related Information are stored in session
 passport.deserializeUser(User.deserializeUser()); //All user related information are remove from session when user logout
 
-app.use((req,res,next)=>{
+app.use((req, res, next) => {
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
   res.locals.currUser = req.user;
@@ -139,11 +135,7 @@ app.use("/listings", listingRouter);
 //use review.js
 app.use("/listings/:id/reviews", reviewsRouter);
 //use user.js
-app.use("/",userRouter);
-
-
-
-  
+app.use("/", userRouter);
 
 //page not found error if user visit route that is not define
 app.all("*", (req, res, next) => {

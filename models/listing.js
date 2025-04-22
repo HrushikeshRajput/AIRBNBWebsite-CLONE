@@ -15,18 +15,9 @@ const listingSchema = new Schema({
     // required: true,
   },
   description: String,
-
-  //Image URL for the listing, optional and must be a string
-  //Default values is a specific image URL if no image is provided
-  //A 'set' function ensures empty string values are replace with default URL
-  image: {
-    type: Object,
-    properties: {
-      filename: String,
-      url: String,
-    },
-    // default: "https://unsplash.com/photos/ferns-in-the-sunlit-forest-look-vibrant-HZksGaLPJA4",
-    // set: (v) => (v === "" ? "https://unsplash.com/photos/ferns-in-the-sunlit-forest-look-vibrant-HZksGaLPJA4" : v),
+  image:{
+    url: String,
+    filename: String,
   },
   price: Number,
   location: String,
