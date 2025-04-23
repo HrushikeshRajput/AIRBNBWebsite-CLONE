@@ -97,9 +97,9 @@ const sessionOptions = {
 
 //Defining the root route("/") for the web server
 //When a GET request is received at "/", respond with a simple message
-app.get("/", (req, res) => {
-  res.send("Hi, I am root.");
-});
+// app.get("/", (req, res) => {
+//   res.send("Hi, I am root.");
+// });
 
 app.use(session(sessionOptions));
 app.use(flash());
